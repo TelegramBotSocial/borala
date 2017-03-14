@@ -1,4 +1,4 @@
-package com.borala;
+package template.borala;
 
 import java.util.List;
 
@@ -13,11 +13,13 @@ import com.pengrad.telegrambot.response.BaseResponse;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import com.pengrad.telegrambot.response.SendResponse;
 
+import dbsql.borala.Connections;
+
 public class Main {
 
 	public static void main(String[] args) {
 
-		//Criação do objeto bot com as informações de acesso
+
 		TelegramBot bot = TelegramBotAdapter.build("352316358:AAEPgQbbp0cMjlrTlNhbf6fYj1JhgqKRXu0");
 
 		//objeto responsável por receber as mensagens
@@ -27,10 +29,8 @@ public class Main {
 		//objeto responsável por gerenciar o envio de ações do chat
 		BaseResponse baseResponse;
 
-		//controle de off-set, isto é, a partir deste ID será lido as mensagens pendentes na fila
 		int m=0;
 
-		//loop infinito pode ser alterado por algum timer de intervalo curto
 		while (true){
 
 			//executa comando no Telegram para obter as mensagens pendentes a partir de um off-set (limite inicial)
@@ -39,35 +39,22 @@ public class Main {
 			//lista de mensagens
 			List<Update> updates = updatesResponse.updates();
 
-			//análise de cada ação da mensagem
 			for (Update update : updates) {
 
-				//atualização do off-set
 				m = update.updateId()+1;
 
-				//System.out.println("Recebendo mensagem:"+ update.message().text());
+				Message msg = new Message(update.message().text());
+				String resposta = msg.getResult();
+				if(resposta!=null){
+					
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), resposta));
+					//envio de "Escrevendo" antes de enviar a resposta
+					baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
+					while(!baseResponse.isOk() || !sendResponse.isOk()){}
 				
-				String msg;
-				if(update.message().text().equals("Christian")){
-					msg = "ele é gay!";
-				}else if(update.message().text().equals("Ricardo")){
-					msg = "topzera!";
-				}else if(update.message().text().equals("Carlos")){
-					msg = "lindão!";
 				}else{
-					msg = "Esse eu não conheço! mas deve ser gay!";
+					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Ops... Não conseguimos entender"));
 				}
-				
-				sendResponse = bot.execute(new SendMessage(update.message().chat().id(), msg));
-
-				//envio de "Escrevendo" antes de enviar a resposta
-				baseResponse = bot.execute(new SendChatAction(update.message().chat().id(), ChatAction.typing.name()));
-				
-				//verificação de ação de chat foi enviada com sucesso
-				//System.out.println("Resposta de Chat Action Enviada?" + baseResponse.isOk());
-
-				//verificação de mensagem enviada com sucesso
-				//System.out.println("Mensagem Enviada?" +sendResponse.isOk());
 
 			}
 
