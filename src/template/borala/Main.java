@@ -17,9 +17,8 @@ import dbsql.borala.Connections;
 
 public class Main {
 
-	sjbaunf ;
 	public static void main(String[] args) {
-sadasd
+
 
 		TelegramBot bot = TelegramBotAdapter.build("352316358:AAEPgQbbp0cMjlrTlNhbf6fYj1JhgqKRXu0");
 

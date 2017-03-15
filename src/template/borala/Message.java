@@ -16,7 +16,6 @@ public class Message {
 			return null;
 		}
 	}
-	blknsd;
 
 	public String getMsgInput() {
 		return msgInput;
