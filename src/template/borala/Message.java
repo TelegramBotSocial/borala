@@ -5,8 +5,13 @@ public class Message {
 	private String msgInput;
 	
 	Message(String msg){
-		msg = msg.toLowerCase();
-		this.setMsgInput(msg); 
+		if(msg!=null){
+			msg = msg.toLowerCase();
+			this.setMsgInput(msg);
+		} else{
+			
+		}
+		 
 	}
 	
 	public String getResult(){

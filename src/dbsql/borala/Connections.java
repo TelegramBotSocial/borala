@@ -27,7 +27,4 @@ public class Connections {
 		}
 	}
 
-	//conexao = new Connections();
-	//conexao.getConnection();
-
 }

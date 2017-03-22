@@ -19,11 +19,11 @@ public class Main {
 
 	public static void main(String[] args) {
 
-
 		TelegramBot bot = TelegramBotAdapter.build("352316358:AAEPgQbbp0cMjlrTlNhbf6fYj1JhgqKRXu0");
+		Connections conexao = new Connections();
 
 		//objeto responsável por receber as mensagens
-		GetUpdatesResponse updatesResponse;
+		GetUpdatesResponse updatesResponse;	
 		//objeto responsável por gerenciar o envio de respostas
 		SendResponse sendResponse;
 		//objeto responsável por gerenciar o envio de ações do chat
@@ -43,6 +43,7 @@ public class Main {
 
 				m = update.updateId()+1;
 
+				//objeto criado no projeto
 				Message msg = new Message(update.message().text());
 				String resposta = msg.getResult();
 				if(resposta!=null){
