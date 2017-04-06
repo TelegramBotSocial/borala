@@ -23,7 +23,7 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		TelegramBot bot = TelegramBotAdapter.build("360545896:AAHfiQzjzY28klViOtAsu9Y2sFfTXdQN_Z8");
+		TelegramBot bot = TelegramBotAdapter.build("352316358:AAEPgQbbp0cMjlrTlNhbf6fYj1JhgqKRXu0");
 
 		//Connections conexao = new Connections();
 
@@ -59,14 +59,18 @@ public class Main {
 					while(!baseResponse.isOk() || !sendResponse.isOk()){
 						System.out.println("Desculpe, estamos com problema em nosso servidor.");
 					}
-					
-					Keyboard keyboard = new ReplyKeyboardMarkup(
-							new KeyboardButton[]{
-									new KeyboardButton("Minha Localização").requestLocation(true),
-									new KeyboardButton("Outra Localização").requestLocation(true)
-							}
-					);   
-					bot.execute(new SendMessage(update.message().chat().id(),"msg teste").replyMarkup(keyboard));
+
+					 
+					if(msg.actLoc==1){
+						Keyboard keyboard = new ReplyKeyboardMarkup(
+								new KeyboardButton[]{
+										new KeyboardButton("Minha Localização").requestLocation(true),
+										new KeyboardButton("Outra Localização").requestLocation(true)
+								}
+								);  
+						bot.execute(new SendMessage(update.message().chat().id()," ... ").replyMarkup(keyboard));
+						msg.actLoc=0;
+					}
 				}else{
 					sendResponse = bot.execute(new SendMessage(update.message().chat().id(), "Comando <b>NÃO</b> processado por nosso sistema, tente novamente ... ").parseMode(ParseMode.HTML));
 				}

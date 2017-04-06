@@ -4,6 +4,8 @@ public class Message {
 	
 	private String msgInput;
 	
+	public int actLoc=0;
+	
 	Message(String msg){
 		if(msg!=null){
 			msg = msg.toLowerCase();
@@ -32,6 +34,7 @@ public class Message {
 	}
 	
 	public String texts(String msg){
+		actLoc=1;
 		if(msg.equals("/start")){
 			return "Seja Bem-vindo ao <strong>Borala</strong> bot :) Para utilizar nosso bot é necessário: enviar sua <b>LOCALIZAÇÃO</b>; posteriormente navegar em nossos menu de categorias para encontrar o lugar <b>IDEAL</b> mais proximo. <code>E caso precise entrar em contato conosco, digite '/suporte'</code> !";
 		}else if(msg.equals("/suporte")){
@@ -43,6 +46,7 @@ public class Message {
 	
 	public String location(String loc){
 		//tratar localização
-		return "você enviou uma localização";
+		return "Estamos processando sua localização...";
 	}
+	
 }
