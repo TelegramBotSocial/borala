@@ -4,27 +4,33 @@ import java.sql.*;
 
 public class Connections {
 
-	private String host;
-	private String user;
-	private String pass;
-
-	public Connections(){
-		host="jdbc:postgresql://localhost:5432/postgis";
-		user="postgres";
-		pass="root";
-	}
-
-	public Connection getConnection(){
+	public static Connection getConnection(){
 		try {
 			Class.forName("org.postgresql.Driver");
-			Connection con = DriverManager.getConnection(host, user, pass);
-			System.out.println("conex√£o executada com sucesso");
+			Connection con = DriverManager.getConnection("jdbc:postgresql://localhost:5432/db_borala", "postgres", "root");
 			return con;
 		}catch(ClassNotFoundException ex){
+			System.out.println("ERRO ENCONTRADO NA CONEX√O (servidor): ");
+			ex.printStackTrace();
 			return null;
 		}catch(SQLException ex){
+			System.out.println("ERRO ENCONTRADO NO SQL: ");
+			ex.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static PreparedStatement getPreparedStatement(String sql){
+		Connection con = getConnection();
+		if(con!=null){
+			try{
+				return con.prepareStatement(sql);		
+			}catch (SQLException e){
+				System.out.println("ERRO NO SQL: ");
+				e.getMessage();
+			}
+		}
+		return null;
 	}
 
 }

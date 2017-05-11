@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/okhttp-3.6.0.jar"/>
 	<classpathentry kind="lib" path="lib/okio-1.11.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/home/betonr/workspace/borala/lib/postgresql-9.4.1212.jar"/>
+	<classpathentry kind="lib" path="C:/Users/CARLOSALBERTOFERREIR/workspace/borala/lib/postgresql-9.4.1212.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
