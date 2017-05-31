@@ -110,8 +110,8 @@ public class Main {
 								}else{
 									InlineKeyboardMarkup buttonsClient = new InlineKeyboardMarkup(
 											new InlineKeyboardButton[]{
-													new InlineKeyboardButton("Abrir no Maps ").url(msg.getUrlClient()),
-													new InlineKeyboardButton("Conheça Melhor ").url(msg.getUrlGoogle())
+													new InlineKeyboardButton("Conheça Melhor ").url(msg.getUrlClient()),
+													new InlineKeyboardButton("Abrir no Maps ").url(msg.getUrlGoogle())
 											});
 									bot.execute(new SendMessage(update.message().chat().id(), msg.getRes().get(i)).parseMode(ParseMode.HTML).replyMarkup(buttonsClient));
 								}

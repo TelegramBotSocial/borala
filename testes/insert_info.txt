@@ -1,0 +1,3 @@
+
+insert into tb_corporation(name, url, info, t_first, t_second, t_three, geom, address, city, state, zipcode, promo)
+VALUES ('esquina do peixe', 'http://www.facebook.com.br', 'a pizzaria mais completa e da região.', 'pizzarias', 'lanchonetes', 'baladas', ST_GeomFromText('POINT(-45.9103586 -23.1645933)', 4326), 'avenida teste, num 543 - Centro', 'São José dos Campos', 'São Paulo', '12214-160', 'COMBO: 3 skols LITRÃO => R$ 15,00') 
