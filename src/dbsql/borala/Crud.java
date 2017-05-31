@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Crud {
 
 	public ResultSet read(String condicao){
-		String sql = "SELECT * FROM tb_corporation ";
+		String sql = "SELECT *, ST_astext(geom) as geometria FROM tb_corporation ";
 		sql+=condicao;
 		PreparedStatement pst = Connections.getPreparedStatement(sql);
 

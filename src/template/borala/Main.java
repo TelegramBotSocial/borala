@@ -6,6 +6,8 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.TelegramBotAdapter;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ChatAction;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ParseMode;
@@ -31,7 +33,7 @@ public class Main {
 		BaseResponse baseResponse;		
 
 		int m=0;
-		
+
 		Message msg = new Message();
 		//criação do objeto, responsável pelo controle do sistema (sequência)
 		Situation sit = new Situation();
@@ -77,10 +79,8 @@ public class Main {
 					//enviando localização
 					Keyboard keyboard = new ReplyKeyboardMarkup(
 							new KeyboardButton[]{
-									new KeyboardButton("Minha Localização").requestLocation(true),
-									new KeyboardButton("Outra Localização").requestLocation(true)
-							}
-							);  
+									new KeyboardButton("Minha Localização").requestLocation(true)
+							});  
 					bot.execute(new SendMessage(update.message().chat().id(),"Envie a localização desejada:").replyMarkup(keyboard));
 				}
 
@@ -90,8 +90,11 @@ public class Main {
 							new KeyboardButton[]{
 									new KeyboardButton("baladas"),
 									new KeyboardButton("restaurantes")
-							}
-							);  
+							},
+							new KeyboardButton[]{
+									new KeyboardButton("lanchonetes"),
+									new KeyboardButton("pizzarias")
+							});  
 					bot.execute(new SendMessage(update.message().chat().id(),"Escolha uma categoria:").replyMarkup(keyboard));
 				}
 
@@ -102,13 +105,23 @@ public class Main {
 							bot.execute(new SendMessage(update.message().chat().id(), "Não foi encontrado nenhum local nas especificações selecionadas, tente outras").parseMode(ParseMode.HTML));
 						}else{
 							for(int i=0; i<msg.getRes().size(); i++){
-								bot.execute(new SendMessage(update.message().chat().id(), msg.getRes().get(i)).parseMode(ParseMode.HTML));
+								if(msg.getUrlClient().equals("")){
+									bot.execute(new SendMessage(update.message().chat().id(), msg.getRes().get(i)).parseMode(ParseMode.HTML));
+								}else{
+									InlineKeyboardMarkup buttonsClient = new InlineKeyboardMarkup(
+											new InlineKeyboardButton[]{
+													new InlineKeyboardButton("Abrir no Maps ").url(msg.getUrlClient()),
+													new InlineKeyboardButton("Conheça Melhor ").url(msg.getUrlGoogle())
+											});
+									bot.execute(new SendMessage(update.message().chat().id(), msg.getRes().get(i)).parseMode(ParseMode.HTML).replyMarkup(buttonsClient));
+								}
 							}	
 						}
 
 						Keyboard keyboard = new ReplyKeyboardMarkup(
 								new KeyboardButton[]{
-										new KeyboardButton("nova localização"),
+										new KeyboardButton("nova localização")
+								},new KeyboardButton[]{
 										new KeyboardButton("nova categoria")
 								}
 								);  

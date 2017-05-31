@@ -12,7 +12,11 @@ public class Message {
 
 	private String msgInput;//msg de entrada
 	private String location; //localização (lat|long)
+	private String category; //categoria escolhida
 	private String respDefault; //respostas programadas (start|suporte|não-compreendida)
+	
+	private String urlClient;
+	private String urlGoogle;
 	private ArrayList<String> res; //respostas do banco de dados
 
 	public Situation sit;
@@ -36,15 +40,14 @@ public class Message {
 	public void getResult(){
 		if(this != null){
 			if(this.getMsgInput()!=null){
-				if(this.getMsgInput().equals("baladas") || this.getMsgInput().equals("restaurantes")){ //categorias
+				if(this.getMsgInput().equals("baladas") || this.getMsgInput().equals("restaurantes") ||
+						this.getMsgInput().equals("lanchonetes") || this.getMsgInput().equals("pizzarias")){ //categorias
 					sit.status = 3;
 					if(getLocation()==null){
 						sit.status = 1;
 					}else{
+						setCategory(this.getMsgInput());
 						setRes(searchDB());
-						if(getRes()!=null){
-							System.out.println(getRes());
-						}
 					}
 
 				}else if(this.getMsgInput().equals("nova localização")){
@@ -76,7 +79,7 @@ public class Message {
 		}else if(msg.equals("/suporte")){
 			setRespDefault("Caso não tenhamos conseguido te <b>ajudar</b> ou tenha alguma <b>sugestão</b>, entre em contato com nosso <i>Suporte</i> na nossa central de atendimentos: www.boralabot.com.br/suporte ... <strong>Até mais</strong>");
 		}else{
-			setRespDefault("Infelizmente não conseguimos entender. Por favor, antes de qualquer coisa, envie sua <b>localização</b> para que possamos ajudar.");
+			setRespDefault("Infelizmente não conseguimos entender. Navegue em nosso <b>menu</b>!");
 		}
 	}
 
@@ -86,9 +89,10 @@ public class Message {
 
 	public void setLocation(Location loc){
 		this.location = loc.toString();
-		//define o lat | long
-		//monta a string do ponto (de acordo com o padrao POSTGIS)
-		//define a global 'location', com o resultado adquirido acima
+		String lat = loc.latitude().toString();
+		String lon = loc.longitude().toString();
+		
+		this.location = lon+" "+lat;
 		sit.status = 2;
 	}
 
@@ -97,12 +101,28 @@ public class Message {
 			ArrayList<String> result = new ArrayList<String>();
 
 			Crud crud = new Crud();
-			ResultSet res = crud.read("where id=1");
+			ResultSet res = crud.read("WHERE st_dwithin(geom, ST_GeomFromText('POINT("+getLocation()+")',4326), 0.15) AND"
+					+ " upper(t_first) = upper('"+getCategory()+"') OR upper(t_second) = upper('"+getCategory()+"') OR upper(t_three) = upper('"+getCategory()+"')");
 
 			String msgFinal = "";
 			try{
 				while(res.next()){
-					msgFinal = "Local encontrado: "+res.getString("name");
+					/* ORGANIZAR RESPOSTA AO USUÁRIO
+					* Nome do local: 
+					* info:
+					* Promoção da semana: 
+					* btn com o GPS:
+					* btn da url do local: 
+					* */
+					msgFinal = "Local: <strong>"+res.getString("name")+"</strong>. ";
+					msgFinal += res.getString("info")+"! ";
+					msgFinal += "Localizado em: "+res.getString("city");
+					if(!res.getString("promo").equals("")){
+						msgFinal += " <strong>PROMOÇÃO:</strong> "+res.getString("promo");
+					}
+					
+					setUrlGoogle(res.getString("geometria"));						
+					setUrlClient(res.getString("url"));		
 					result.add(msgFinal);
 				}
 			}catch(SQLException ex){
@@ -113,7 +133,7 @@ public class Message {
 		}
 		return null;
 	}
-
+	
 	public ArrayList<String> getRes() {
 		return res;
 	}
@@ -129,5 +149,33 @@ public class Message {
 	public void setRespDefault(String respDefault) {
 		this.respDefault = respDefault;
 	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getUrlClient() {
+		return urlClient;
+	}
+
+	public void setUrlClient(String urlClient) {
+		this.urlClient = urlClient;
+	}
+	
+	private void setUrlGoogle(String googleMaps) {
+		String res = googleMaps.substring(googleMaps.indexOf("(")+1, googleMaps.indexOf(")"));
+		String laglon[] = res.split(" ");
+		
+		this.urlGoogle = "https://www.google.com.br/maps/@"+laglon[1]+","+laglon[0]+",16z";
+	}
+
+	public String getUrlGoogle() {
+		return this.urlGoogle;
+	}
+
 
 }
